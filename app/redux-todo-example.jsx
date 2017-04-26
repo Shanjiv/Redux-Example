@@ -13,22 +13,35 @@ var reducer = (state = stateDefault, action) => {
       return {
         ...state,
         searchText: action.searchText
-      }
+      };
     default:
       return state;
   }
-
-  return state;
 };
+var store = redux.createStore(reducer, redux.compose(
+  window.devToolsExtension ? window.devToolsExtension() : f => f
+));
 
-var store = redux.createStore(reducer);
+// Subscribe to changes
+store.subscribe(() => {
+  var state = store.getState();
 
-var currentState = store.getState();
-console.log('currenState', currentState);
+  document.getElementById('app').innerHTML = state.searchText;
+});
+
+console.log('currentState', store.getState());
 
 store.dispatch({
-  type:'CHANGE_SEARCH_TEXT',
+  type: 'CHANGE_SEARCH_TEXT',
   searchText: 'work'
 });
 
-console.log('searchText should be "work"', store.getState());
+store.dispatch({
+  type: 'CHANGE_SEARCH_TEXT',
+  searchText: 'dog'
+});
+
+store.dispatch({
+  type: 'CHANGE_SEARCH_TEXT',
+  searchText: 'Something else'
+});
